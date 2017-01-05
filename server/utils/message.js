@@ -5,4 +5,11 @@ var genMsg=(from,text)=>{
     createdAt:new Date().getTime()
   }
 }
-module.exports={genMsg};
+var genLocMsg=(from,lg,lt)=>{
+  return{
+    from,
+    url:`https://www.google.com/maps?q=${lg},${lt}`,
+    createdAt:new Date().getTime()
+  }
+}
+module.exports={genMsg,genLocMsg};

@@ -3,7 +3,7 @@ const path = require('path');
 const http = require('http');
 const socket = require('socket.io');
 const port = process.env.PORT || 3000;
-const {genMsg} = require('./utils/message');
+const {genMsg,genLocMsg} = require('./utils/message');
 
 var publicPath = path.join(__dirname,'../public');
 
@@ -27,6 +27,10 @@ io.on('connection',(skt)=>{
     console.log('msg from client: ',msg);
     io.emit('newMsg',genMsg(msg.from,msg.text));
     callback('fromserver ack');
+  });
+
+  skt.on('createLocMsg',(msg)=>{
+    io.emit('newLocMsg',genLocMsg('osho',msg.lt,msg.lg));
   });
 });
 
