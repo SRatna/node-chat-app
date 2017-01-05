@@ -3,6 +3,7 @@ const path = require('path');
 const http = require('http');
 const socket = require('socket.io');
 const port = process.env.PORT || 3000;
+const {genMsg} = require('./utils/message');
 
 var publicPath = path.join(__dirname,'../public');
 
@@ -18,13 +19,14 @@ io.on('connection',(skt)=>{
     console.log('connection closed by user');
   });
 
-  skt.on('createMsg',(msg)=>{
+  skt.emit('newMsg',genMsg('admin','welcome to the group'));
+
+  skt.broadcast.emit('newMsg',genMsg('admin','new member connected'));
+
+  skt.on('createMsg',(msg,callback)=>{
     console.log('msg from client: ',msg);
-    io.emit('newMsg',{
-      from: msg.from,
-      text: msg.text,
-      createdAt: new Date().getTime()
-    });
+    io.emit('newMsg',genMsg(msg.from,msg.text));
+    callback('fromserver ack');
   });
 });
 
