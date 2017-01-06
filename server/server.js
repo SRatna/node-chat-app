@@ -4,6 +4,8 @@ const http = require('http');
 const socket = require('socket.io');
 const port = process.env.PORT || 3000;
 const {genMsg,genLocMsg} = require('./utils/message');
+const {isRealStr} = require('./utils/validation');
+const {Users} = require('./utils/users');
 
 var publicPath = path.join(__dirname,'../public');
 
@@ -12,16 +14,36 @@ app.use(express.static(publicPath));
 
 var server = http.createServer(app);
 var io = socket(server);
+var users = new Users();
 
 io.on('connection',(skt)=>{
   console.log('new connection from user');
-  skt.on('disconnect',()=>{
-    console.log('connection closed by user');
+
+  skt.on('join',(params,callback)=>{
+    if(!(isRealStr(params.name)&&isRealStr(params.room))){
+      return callback('Name and Room are required');
+    }
+    skt.join(params.room);
+    users.removeUser(skt.id);//removeUser if he is already in other room
+    users.addUser(skt.id,params.name,params.room);
+    io.to(params.room).emit('updateUserList',users.getUserList(params.room));
+    skt.emit('newMsg',genMsg('admin','welcome to the group'));
+    skt.broadcast.to(params.room).emit('newMsg',genMsg('admin',`${params.name} joined this room`));
+
+    callback();
   });
 
-  skt.emit('newMsg',genMsg('admin','welcome to the group'));
+  skt.on('disconnect',()=>{
+    console.log('connection closed by user');
+    var user = users.removeUser(skt.id);
 
-  skt.broadcast.emit('newMsg',genMsg('admin','new member connected'));
+    if(user){
+      io.to(user.room).emit('updateUserList',users.getUserList(user.room));
+      io.to(user.room).emit('newMsg',genMsg('admin',`${user.name} left the room.`));
+    }
+  });
+
+
 
   skt.on('createMsg',(msg,callback)=>{
     console.log('msg from client: ',msg);
