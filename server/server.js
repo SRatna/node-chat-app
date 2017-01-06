@@ -46,13 +46,19 @@ io.on('connection',(skt)=>{
 
 
   skt.on('createMsg',(msg,callback)=>{
-    console.log('msg from client: ',msg);
-    io.emit('newMsg',genMsg(msg.from,msg.text));
+    //console.log('msg from client: ',msg);
+    var user = users.getUser(skt.id);
+    if(user && isRealStr(msg.text)){
+      io.to(user.room).emit('newMsg',genMsg(user.name,msg.text));
+    }
     callback('fromserver ack');
   });
 
   skt.on('createLocMsg',(msg)=>{
-    io.emit('newLocMsg',genLocMsg('osho',msg.lt,msg.lg));
+    var user = users.getUser(skt.id);
+    if(user){
+      io.to(user.room).emit('newLocMsg',genLocMsg(user.name,msg.lt,msg.lg));;
+    }
   });
 });
 
