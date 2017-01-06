@@ -1,3 +1,4 @@
+const _ = require('lodash');
 class Users {
   constructor() {
     this.users=[]
@@ -26,10 +27,16 @@ class Users {
     var usersList = users.map((user)=>user.name);
     return usersList;
   }
+  getActiveRooms(){
+    return _.uniq(this.users.map((user)=>user.room));
+  }
 }
 
 // var aUser = new Users();
-// var newOne = aUser.addUser(32,'sdf','df');
+// aUser.addUser(32,'sdf','df');
+// aUser.addUser(332,'sdddf','df');
+// aUser.addUser(312,'sdwwf','df');
+// console.log(aUser.getActiveRooms());
 // var rm = aUser.removeUser(32);
 // console.log(rm);
 // console.log(aUser.getUserList('df'));

@@ -17,10 +17,17 @@ function scrollToBottom() {
 socket.on('connect',function () {
   //console.log('connected to server');
   var params = jQuery.deparam(window.location.search);
+  console.log(params);
   var name=params.name;
   var room=params.room;
-  name=name.toLowerCase();
-  room=room.toLowerCase();
+  var selectedRoom=params.selectedRoom;
+  if(selectedRoom==='No Rooms Available'||selectedRoom==='Available Rooms'){
+    name=name.toLowerCase();
+    room=room.toLowerCase();
+  }else {
+    name=name.toLowerCase();
+    room=selectedRoom.toLowerCase();
+  }
   params={name,room};
 
   socket.emit('join',params,function (err) {

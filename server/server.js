@@ -19,7 +19,12 @@ var users = new Users();
 io.on('connection',(skt)=>{
   console.log('new connection from user');
 
+  //for select options
+
+  io.emit('showActiveRooms',users.getActiveRooms());
+
   skt.on('join',(params,callback)=>{
+    console.log(params);
     if(!(isRealStr(params.name)&&isRealStr(params.room))){
       return callback('Name and Room are required');
     }
