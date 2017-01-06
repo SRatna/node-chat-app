@@ -17,6 +17,11 @@ function scrollToBottom() {
 socket.on('connect',function () {
   //console.log('connected to server');
   var params = jQuery.deparam(window.location.search);
+  var name=params.name;
+  var room=params.room;
+  name=name.toLowerCase();
+  room=room.toLowerCase();
+  params={name,room};
 
   socket.emit('join',params,function (err) {
     if(err){

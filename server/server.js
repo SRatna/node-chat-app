@@ -23,6 +23,9 @@ io.on('connection',(skt)=>{
     if(!(isRealStr(params.name)&&isRealStr(params.room))){
       return callback('Name and Room are required');
     }
+    if(users.getUserByName(params.name)){
+      return callback('Name already taken please choose other name');
+    }
     skt.join(params.room);
     users.removeUser(skt.id);//removeUser if he is already in other room
     users.addUser(skt.id,params.name,params.room);

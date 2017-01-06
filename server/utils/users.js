@@ -8,6 +8,9 @@ class Users {
     this.users.push(user);
     return user;
   }
+  getUserByName(name){
+    return this.users.filter((user)=>user.name===name)[0];
+  }
   getUser(id){
     return this.users.filter((user)=>user.id===id)[0];
   }
