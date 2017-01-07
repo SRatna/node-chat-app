@@ -14,11 +14,13 @@ function scrollToBottom() {
     msgs.scrollTop(scrollHeight);
   }
 }
+var activeUser;
 socket.on('connect',function () {
   //console.log('connected to server');
   var params = jQuery.deparam(window.location.search);
-  console.log(params);
+  //console.log(params);
   var name=params.name;
+  activeUser=name;
   var room=params.room;
   var selectedRoom=params.selectedRoom;
   if(selectedRoom==='No Rooms Available'||selectedRoom==='Available Rooms'){
@@ -50,7 +52,12 @@ socket.on('updateUserList',function (users) {
   var ol = jQuery('<ol></ol>');
 
   users.forEach(function (user) {
-    ol.append(jQuery('<li></li>').text(user));
+    if(user===activeUser){
+      ol.append(jQuery('<li style="background:indianred;color:white;"></li>').
+      text(user.replace(/\b\w/g, function(l){ return l.toUpperCase() })));
+    }else {
+      ol.append(jQuery('<li></li>').text(user.replace(/\b\w/g, function(l){ return l.toUpperCase() })));
+    }
   });
   jQuery('#users').html(ol);
 });
@@ -58,10 +65,17 @@ socket.on('updateUserList',function (users) {
 socket.on('newMsg',function (msg) {
   var fmtTime = moment(msg.createdAt).format('h:mm a');
   var msgTmp = jQuery('#msgTem').html();
+  var style;
+  if(msg.from===activeUser){
+    style='flex-end';
+  }else {
+    style='flex-start';
+  }
   var html = Mustache.render(msgTmp,{
-    from:msg.from,
+    from:msg.from.replace(/\b\w/g, function(l){ return l.toUpperCase() }),
     text:msg.text,
-    createdAt:fmtTime
+    createdAt:fmtTime,
+    active:style
   });
   jQuery('#msgs').append(html);
   scrollToBottom();
@@ -74,10 +88,17 @@ socket.on('newMsg',function (msg) {
 socket.on('newLocMsg',function (msg) {
   var fmtTime = moment(msg.createdAt).format('h:mm a');
   var locMsgTmp = jQuery('#locMsgTem').html();
+  var style;
+  if(msg.from===activeUser){
+    style='flex-end';
+  }else {
+    style='flex-start';
+  }
   var html = Mustache.render(locMsgTmp,{
-    from:msg.from,
+    from:msg.from.replace(/\b\w/g, function(l){ return l.toUpperCase() }),
     createdAt:fmtTime,
-    url:msg.url
+    url:msg.url,
+    active:style
   });
   jQuery('#msgs').append(html);
   scrollToBottom();

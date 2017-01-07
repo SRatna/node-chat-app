@@ -6,14 +6,20 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>chat app</title>
   <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .chat__messages{
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
 </head>
-<body class="chat">
+<body class="chat" style="margin-left:15%;margin-right:15%;background:lightgray">
   <div class="chat__sidebar">
     <h3>People</h3>
     <div id="users"></div>
   </div>
   <div class="chat__main">
-    <ol id="msgs" class="chat__messages"></ol>
+    <ol id="msgs" class="chat__messages" ></ol>
     <div class="chat__footer">
       <form id="msg-form">
         <input id="msg" type="text" name="msg" placeholder="Msg" autofocus autocomplete="off">
@@ -23,7 +29,8 @@
     </div>
   </div>
   <script id="msgTem" type="text/template">
-    <li class="message">
+    <li class="message" style="align-self:{{active}};max-width:60%;padding:10px;margin:5px;
+                               border-radius:10px;background:lightcyan;">
       <div class="message__title">
         <h4>{{from}}</h4>
         <span>{{createdAt}}</span>
@@ -35,7 +42,8 @@
   </script>
 
   <script id="locMsgTem" type="text/template">
-    <li class="message">
+    <li class="message" style="align-self:{{active}};max-width:60%;padding:10px;margin:5px;
+                               border-radius:10px;background:lightcyan;">
       <div class="message__title">
         <h4>{{from}}</h4>
         <span>{{createdAt}}</span>
