@@ -77,9 +77,17 @@ socket.on('newMsg',function (msg) {
   }else {
     style='flex-start';
   }
+  function urlify(text) {
+    var urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, function(url) {
+        return '<a href="' + url + '" target="_blank">' + url + '</a>';
+    })
+    // or alternatively
+    // return text.replace(urlRegex, '<a href="$1">$1</a>')
+  }
   var html = Mustache.render(msgTmp,{
     from:msg.from.replace(/\b\w/g, function(l){ return l.toUpperCase() }),
-    text:msg.text,
+    text:urlify(msg.text),
     createdAt:fmtTime,
     active:style
   });
