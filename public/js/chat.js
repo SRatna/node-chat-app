@@ -63,6 +63,7 @@ socket.on('updateUserList',function (users) {
 });
 
 socket.on('newMsg',function (msg) {
+  var audio = new Audio('../sound/sound.mp3');
   var fmtTime = moment(msg.createdAt).format('h:mm a');
   var msgTmp = jQuery('#msgTem').html();
   var style;
@@ -79,6 +80,9 @@ socket.on('newMsg',function (msg) {
   });
   jQuery('#msgs').append(html);
   scrollToBottom();
+  if(msg.from!==activeUser){
+    audio.play();
+  }
   // var li = jQuery('<li></li>');
   // li.text(`${msg.from} ${fmtTime}: ${msg.text}`);
   // jQuery('#msgs').append(li);
@@ -86,6 +90,8 @@ socket.on('newMsg',function (msg) {
 });
 
 socket.on('newLocMsg',function (msg) {
+  //sound
+  var audio = new Audio('../sound/sound.mp3');
   var fmtTime = moment(msg.createdAt).format('h:mm a');
   var locMsgTmp = jQuery('#locMsgTem').html();
   var style;
@@ -102,6 +108,9 @@ socket.on('newLocMsg',function (msg) {
   });
   jQuery('#msgs').append(html);
   scrollToBottom();
+  if(msg.from!==activeUser){
+    audio.play();
+  }
   // var li = jQuery('<li></li>');
   // var a = jQuery('<a target="_blank">View User Location</a>');
   // li.text(`${msg.from} ${fmtTime}: `);
