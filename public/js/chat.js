@@ -1,5 +1,5 @@
 var socket = io();
-
+window.isActive = true;
 function scrollToBottom() {
   var msgs = jQuery('#msgs');
   var newMsg = msgs.children('li:last-child');
@@ -64,6 +64,11 @@ socket.on('updateUserList',function (users) {
 
 socket.on('newMsg',function (msg) {
   var audio = new Audio('../sound/sound.mp3');
+  $(function() {
+    $(window).focus(function() { this.isActive = true; });
+    $(window).blur(function() { this.isActive = false; });
+    console.log(window.isActive);
+  });
   var fmtTime = moment(msg.createdAt).format('h:mm a');
   var msgTmp = jQuery('#msgTem').html();
   var style;
@@ -80,7 +85,7 @@ socket.on('newMsg',function (msg) {
   });
   jQuery('#msgs').append(html);
   scrollToBottom();
-  if(msg.from!==activeUser){
+  if((!window.isActive)&&msg.from!==activeUser){
     audio.play();
   }
   // var li = jQuery('<li></li>');
@@ -92,6 +97,12 @@ socket.on('newMsg',function (msg) {
 socket.on('newLocMsg',function (msg) {
   //sound
   var audio = new Audio('../sound/sound.mp3');
+  $(function() {
+    window.isActive = true;
+    $(window).focus(function() { this.isActive = true; });
+    $(window).blur(function() { this.isActive = false; });
+  });
+  console.log(window.isActive);
   var fmtTime = moment(msg.createdAt).format('h:mm a');
   var locMsgTmp = jQuery('#locMsgTem').html();
   var style;
@@ -108,7 +119,7 @@ socket.on('newLocMsg',function (msg) {
   });
   jQuery('#msgs').append(html);
   scrollToBottom();
-  if(msg.from!==activeUser){
+  if((!window.isActive)&&msg.from!==activeUser){
     audio.play();
   }
   // var li = jQuery('<li></li>');
